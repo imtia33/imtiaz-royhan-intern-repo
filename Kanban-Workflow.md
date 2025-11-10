@@ -10,4 +10,18 @@ I can improve my workflow by:
 - Regularly reviewing the board to reprioritize and clear blockers.  
 - Using labels or colors to indicate urgency or task type.
 
+## Focus Bears kanban workflow:
+Columns: 
 
+Super low priority
+Very low priority
+Integrate with Azure Event Hub
+Blocked
+Next fundraising round
+Untriaged Low Priority
+Untriaged Medium Priority
+![Image](focus-bear-kanban.png)
+
+## My experience in Kanban: 
+
+![Image](my-kanban.png)
