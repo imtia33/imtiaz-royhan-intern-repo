@@ -22,5 +22,11 @@
 
 So I feel a personal linkage to the problems Focus Bear addresses.
 
+# Features that are helpful to me:
+ - App Blocking. Blocking games.
+ - Site blocking. Blocking comics sites.
+
+![Image](features.jpg)
+
 
 
