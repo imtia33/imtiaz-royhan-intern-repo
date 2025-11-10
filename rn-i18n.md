@@ -33,3 +33,105 @@ To test localization:
 5. **Cultural Review**: Have native speakers review content and formatting.
 6. **Edge Cases**: Test very long/short text, special characters, and mixed languages.
 7. **Regression Tests**: Make sure new updates don't break localization.
+
+## Implementation: 
+```js
+
+//app.tsx
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ */
+
+import { NewAppScreen } from '@react-native/new-app-screen';
+import { StatusBar, StyleSheet, useColorScheme, View, Button, Text } from 'react-native';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import * as Sentry from '@sentry/react-native';
+import './i18n';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './components/LanguageSwitcher';
+
+Sentry.init({
+  dsn: 'https://09a0bcd637affbf12d0fff2de67fa546@o4510318758723585.ingest.de.sentry.io/4510318759247952',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [
+    Sentry.mobileReplayIntegration(),
+    Sentry.feedbackIntegration(),
+  ],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
+
+function App() {
+  const isDarkMode = useColorScheme() === 'dark';
+
+  return (
+    <SafeAreaProvider>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <AppContent />
+    </SafeAreaProvider>
+  );
+}
+
+function AppContent() {
+  const safeAreaInsets = useSafeAreaInsets();
+  const { t } = useTranslation();
+
+  return (
+    <View style={styles.container}>
+      <Text style={{ fontSize: 24, margin: 16 }}>{t('hello')}</Text>
+      <LanguageSwitcher />
+      <Button
+        title={t('tryButton')}
+        onPress={() => {
+          Sentry.captureException(new Error('First error'));
+        }}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
+
+export default Sentry.wrap(App);
+```
+
+```js
+//LanguageSwitcher.jsx
+import React from 'react';
+import { View, Button } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
+export default function LanguageSwitcher() {
+  const { i18n, t } = useTranslation();
+
+  return (
+    <View style={{ flexDirection: 'row', gap: 12 }}>
+      <Button title={t('languageEnglish')} onPress={() => i18n.changeLanguage('en')} />
+      <Button title={t('languageSpanish')} onPress={() => i18n.changeLanguage('es')} />
+    </View>
+  );
+}
+```
+## Test details:
+ The library was tested in typescript for 2 buttons. A simple Implementation to check how the i18n library works. 
