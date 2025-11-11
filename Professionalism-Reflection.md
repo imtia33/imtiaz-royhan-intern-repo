@@ -26,3 +26,6 @@ If no reply after reasonable attempts, I’ll escalate respectfully through the 
 * Use negative or sarcastic tone in messages.
 * Gossip or speak disrespectfully about teammates.
 * React emotionally before understanding the situation.
+
+## A short story of colaboration:
+ On the second semester, we made a Chat application with C++ and QT. We were a 3 person group. Shalman is one of them. He tries to experiments things. On this project he changed the client app code for the server ip and port address. Which caused the app fail to connect to the server. I was assigned as the person to implement the server and client app connection so I was able to find and fix the connection error. It took me 1.5 min to fix. While I was fixing it , Tareef, the second person, opened his laptop and continued the connection and continued the presentation while I was fixing Shalmans code. My teacher was Impressed by this colaboration of how quickly we fixed the problem and how we were able to seemlessly continue the presentation. 
