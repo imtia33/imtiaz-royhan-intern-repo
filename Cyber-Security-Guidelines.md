@@ -52,3 +52,11 @@ If I suspect a breach or unusual account activity:
 
 ---
 
+# My 2FA:
+![Image](2FA.png)
+
+# Password Manager
+On the email account.
+
+# Auto Lock
+![Image](autolock.png)
