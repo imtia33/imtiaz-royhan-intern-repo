@@ -12,9 +12,7 @@ I can adjust my communication by being **more patient, direct, and clear**, avoi
 Implement a **“Focus Mode Simplify” toggle** that reduces distractions by minimizing visual clutter and simplifying UI elements — helpful for users with ADHD or sensory sensitivity.there can exsit a default/previuous session duration saved, where user can change if they want to. 
 
 ---
-Sure — here’s how you can update your reflection properly with both required parts added.
 
----
 
 ### **Updated Reflection**
 
