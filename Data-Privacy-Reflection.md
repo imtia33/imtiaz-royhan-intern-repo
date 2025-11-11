@@ -31,4 +31,5 @@ To ensure I handle data securely in my daily work, I will:
 | Ignoring updates                     | Security vulnerabilities | Enable auto-updates and patch promptly       |
 
 ---
-
+## 2FA implementation
+![Image](2FA.png)
