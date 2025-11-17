@@ -53,3 +53,43 @@ Clear commit messages help teams quickly understand the purpose of each change. 
 ## How can poor commit messages cause issues later?
 
 Poor commit messages make it harder to figure out what was changed, why, or how to fix or revert changes in the future. This can lead to confusion, wasted time during debugging or code reviews, and difficulty maintaining the codebase over time.
+## merge conflict:
+How to cause and resolve:
+```
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git add .
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git commit -m "initial"
+[main 90a5188] initial
+ 1 file changed, 1 insertion(+)
+ create mode 100644 conflicttest.txt
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git checkout -b feature-axis
+Switched to a new branch 'feature-axis'
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git commit -am "feature change"
+[feature-axis 877eb4e] feature change
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git checkout main
+Switched to branch 'main'
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git commit -m "main change"
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   conflicttest.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git commit -am "main change"
+[main 2eb9781] main change
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git merge feature-axis
+Auto-merging conflicttest.txt
+CONFLICT (content): Merge conflict in conflicttest.txt
+Automatic merge failed; fix conflicts and then commit the result.
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git add .
+PS C:\Users\imtia\OneDrive\Desktop\imtiaz-royhan-intern-repo\imtiaz-royhan-intern-repo> git commit -m "resolved"
+[main bc10534] resolved
+```
+What I have learned : You delete what you don’t want → keep what you want → save → commit.
