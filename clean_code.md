@@ -22,7 +22,7 @@ Write code that performs well and uses resources wisely, but avoid optimizing to
 
 
 # Messy sample code:
-```c++
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
 int main()
@@ -66,7 +66,7 @@ Random blank lines removed.
 Variable names verbose and inconsistent.
 
 fixed: 
-```c++
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
 int main()
@@ -102,3 +102,276 @@ int main()
     }
 }
 ```
+
+## Lint Test:
+
+Code formatting is important because it helps keep code readable, maintainable, and consistent for everyone on the team. Well-formatted code makes it easier to spot bugs, review changes, and onboard new contributors.
+
+### Sample Linter Issue Detected:
+One issue detected by the linter was missing spaces after commas and inconsistent indentation.
+
+**Sample:**
+```js
+for(let i=0;i<arr.length;i++){
+console.log(arr[i]);
+}
+```
+
+### Did Formatting Help?
+
+**Before:**
+```js
+function sum(a,b){
+let result=a+b;
+return result;}
+```
+
+**After:**
+```js
+function sum(a, b) {
+    let result = a + b;
+    return result;
+}
+```
+
+After formatting, the code is much easier to read and understand, reducing the chance for mistakes and making collaboration smoother.
+
+## Refactoring variables:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int testCases;
+    cin >> testCases;
+
+    while (testCases--) {
+        int n;
+        cin >> n;
+
+        vector<int> permA(n);
+        vector<int> permB(n);
+
+        for (int i = 0; i < n; i++) cin >> permA[i];
+        for (int i = 0; i < n; i++) cin >> permB[i];
+
+        vector<pair<int, int>> pairedPerms;
+        for (int i = 0; i < n; i++) pairedPerms.push_back({permA[i], permB[i]});
+
+        sort(pairedPerms.begin(), pairedPerms.end());
+
+        for (auto &p : pairedPerms) cout << p.first << " ";
+        cout << endl;
+        for (auto &p : pairedPerms) cout << p.second << " ";
+        cout << endl;
+    }
+}
+```
+### What makes a good variable or function name?
+
+A good variable or function name is clear and descriptive, indicating exactly what the variable represents or what the function does. Good names are usually concise but not ambiguous, making the code easier to understand even for someone new to the project.
+
+### What issues can arise from poorly named variables?
+
+Poorly named variables can lead to confusion and misunderstandings about what a piece of code is supposed to do. This can cause bugs, make the code harder to debug or extend, and increase the time required for others (or even yourself) to understand the program later on.
+
+### How did refactoring improve code readability?
+
+Refactoring improved code readability by giving variables and functions meaningful names and by organizing the code structure. This makes the code easier to follow, reduces cognitive load, and helps others (or your future self) maintain and update the code more efficiently.
+
+## Modular functions:
+A sample complex code (from my personal project):
+
+```js
+export const findTop3DistinctRoutes = async (start, end) => {
+  const db = await SQLite.openDatabaseAsync("routes.db");
+  const routeCache = new Map();
+  const bestRoutes = [];
+  const visitedStates = new Map();
+  const MAX_DISTANCE_DIFFERENCE = 2; // 2 km maximum difference allowed
+
+  const dfs = async (currentNode, path, totalDistance, visited) => {
+    const stateKey = `${currentNode}-${Array.from(visited).join(",")}`;
+    if (
+      visitedStates.has(stateKey) &&
+      visitedStates.get(stateKey) <= totalDistance
+    )
+      return;
+    visitedStates.set(stateKey, totalDistance);
+
+    if (
+      bestRoutes.length > 0 &&
+      totalDistance > bestRoutes[0].totalDistance + MAX_DISTANCE_DIFFERENCE
+    ) {
+      return;
+    }
+
+    if (currentNode === end) {
+      const newRoute = { path: [...path, end], totalDistance };
+      updateBestRoutes(newRoute);
+      return;
+    }
+
+    visited.add(currentNode);
+
+    const connections = await getRoutesFrom(currentNode);
+    const promises = connections.map(async (connection) => {
+      const nextNode = connection.To;
+      const distance = parseFloat(connection.distanceKm);
+      if (!visited.has(nextNode)) {
+        await dfs(
+          nextNode,
+          [...path, currentNode],
+          totalDistance + distance,
+          visited
+        );
+      }
+    });
+    await Promise.all(promises);
+
+    visited.delete(currentNode); // Backtrack
+  };
+}
+```
+**Modular Version:**
+
+```js
+const createStateKey = (currentNode, visited) =>
+  `${currentNode}-${Array.from(visited).join(",")}`;
+
+const shouldSkipState = (visitedStates, stateKey, totalDistance) =>
+  visitedStates.has(stateKey) && visitedStates.get(stateKey) <= totalDistance;
+
+const exceedsDistanceLimit = (bestRoutes, totalDistance, maxDifference) =>
+  bestRoutes.length > 0 &&
+  totalDistance > bestRoutes[0].totalDistance + maxDifference;
+
+const handleRouteFound = (path, end, totalDistance, updateBestRoutes) => {
+  const newRoute = { path: [...path, end], totalDistance };
+  updateBestRoutes(newRoute);
+};
+
+const exploreConnections = async (
+  connections,
+  visited,
+  currentNode,
+  path,
+  totalDistance,
+  dfs
+) => {
+  const promises = connections.map(async (connection) => {
+    const nextNode = connection.To;
+    const distance = parseFloat(connection.distanceKm);
+    if (!visited.has(nextNode)) {
+      await dfs(
+        nextNode,
+        [...path, currentNode],
+        totalDistance + distance,
+        visited
+      );
+    }
+  });
+  await Promise.all(promises);
+};
+
+export const findTop3DistinctRoutes = async (start, end) => {
+  const db = await SQLite.openDatabaseAsync("routes.db");
+  const routeCache = new Map();
+  const bestRoutes = [];
+  const visitedStates = new Map();
+  const MAX_DISTANCE_DIFFERENCE = 2;
+
+  const updateBestRoutes = (newRoute) => {
+    if (
+      bestRoutes.some(
+        (route) =>
+          route.path.length === newRoute.path.length &&
+          route.path.every((n, i) => n === newRoute.path[i])
+      )
+    ) {
+      return;
+    }
+    bestRoutes.push(newRoute);
+    bestRoutes.sort((a, b) => a.totalDistance - b.totalDistance);
+    if (bestRoutes.length > 3) {
+      bestRoutes.length = 3;
+    }
+  };
+
+  const getRoutesFrom = async (node) => {
+    if (routeCache.has(node)) {
+      return routeCache.get(node);
+    }
+    const [results] = await db.execAsync(
+      "SELECT * FROM routes WHERE From = ?",
+      [node]
+    );
+    routeCache.set(node, results || []);
+    return results || [];
+  };
+
+  const dfs = async (currentNode, path, totalDistance, visited) => {
+    const stateKey = createStateKey(currentNode, visited);
+
+    if (shouldSkipState(visitedStates, stateKey, totalDistance)) return;
+    visitedStates.set(stateKey, totalDistance);
+
+    if (exceedsDistanceLimit(bestRoutes, totalDistance, MAX_DISTANCE_DIFFERENCE)) return;
+
+    if (currentNode === end) {
+      handleRouteFound(path, end, totalDistance, updateBestRoutes);
+      return;
+    }
+
+    visited.add(currentNode);
+
+    const connections = await getRoutesFrom(currentNode);
+    await exploreConnections(
+      connections,
+      visited,
+      currentNode,
+      path,
+      totalDistance,
+      dfs
+    );
+
+    visited.delete(currentNode);
+  };
+
+  await dfs(start, [], 0, new Set());
+  return bestRoutes;
+};
+```
+
+---
+
+### Reflections
+
+**Why break down functions?**
+- Increases reusability
+- Eases testing
+- Improves maintenance
+- Easier to debug and read
+
+**How did refactoring help?**
+- Clear separation of tasks
+- Each function does one job
+- Logic is easier to update or extend
+- Reduces bugs and repetition
+
+## commenting and documentation:
+**When should you add comments?**
+- When the intent of the code isn’t obvious, even after careful naming and structure.
+- When working with complex algorithms or non-trivial logic, explain the "why" behind decisions.
+- To clarify workarounds, hacks, or code that addresses specific limitations or bugs.
+- For documenting expected side-effects or usage (especially public APIs).
+- To warn future maintainers about potential pitfalls or invisible dependencies.
+
+**When should you avoid comments and instead improve the code?**
+- When a comment only explains *what* the code does—improve variable/function names and refactor for clarity.
+- If the logic can be broken down into smaller, well-named functions rather than commented code blocks.
+- When comments become outdated or duplicate what the code already says; this can cause confusion.
+- If code can be simplified, do so rather than writing a comment to "make up" for complexity.
+
+
