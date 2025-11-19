@@ -346,7 +346,7 @@ export const findTop3DistinctRoutes = async (start, end) => {
 
 ---
 
-### Reflections
+### Modular Functions
 
 **Why break down functions?**
 - Increases reusability
@@ -374,4 +374,74 @@ export const findTop3DistinctRoutes = async (start, end) => {
 - When comments become outdated or duplicate what the code already says; this can cause confusion.
 - If code can be simplified, do so rather than writing a comment to "make up" for complexity.
 
+## Error Handling:
+ Before :
+ ```js
+   export async function getCurrentUser() {
+      const currentAccount = await getAccount();
+      console.log(currentAccount)
+      if (!currentAccount) throw Error;
+  
+      const currentUser = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.userCollectionId,
+        [Query.equal("accountId", currentAccount.$id)]
+      );
+  
+      if (!currentUser) throw Error;
+  
+      return currentUser.documents[0];
+  }
+  ```
+  What problem it caused: In a recent cloudflare outage appwrite's databases were a bit effected, so one of the user could create account but their related data in a table was not added. which caused the login redirection issue as this function was supposed to return some user data and the redirect function could not redirect properly for the missing document. This took an hour to figure out as this happens very rarely.
 
+  After:
+  ```js
+    export async function getCurrentUser() {
+    try {
+      const currentAccount = await getAccount();
+      console.log(currentAccount)
+      if (!currentAccount) throw Error;
+  
+      const currentUser = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.userCollectionId,
+        [Query.equal("accountId", currentAccount.$id)]
+      );
+      console.log(currentUser)
+  
+  
+      return currentUser.documents[0];
+    } catch (error) {
+      console.log(error) //this part caught that there was no row present by that query.
+    }
+  }
+  ```
+
+## Unit Testing Reflection
+
+### How do unit tests help keep code clean?
+
+Unit tests help keep code clean in several ways:
+
+1. **Encouraging modular design**: Writing tests forces you to think about how functions can be tested in isolation, leading to smaller, more focused functions with single responsibilities.
+
+2. **Acting as documentation**: Well-written tests serve as living documentation, showing how functions are intended to be used and what results they should produce.
+
+3. **Enabling safe refactoring**: With a good test suite, you can confidently refactor code knowing that if you break something, the tests will catch it.
+
+4. **Improving code quality**: The process of writing tests often reveals design flaws or edge cases that weren't initially considered.
+
+### What issues did you find while testing?
+
+While writing unit tests for the utility functions, several insights emerged:
+
+1. **Edge case consideration**: Initially, I didn't consider edge cases like empty arrays, null values, or zero values. Writing tests forced me to think about these scenarios.
+
+2. **Function purity**: Some functions needed to be refactored to ensure they had predictable outputs for given inputs, making them easier to test.
+
+3. **Input validation**: Tests revealed the need for better input validation to handle unexpected inputs gracefully.
+
+4. **Code coverage awareness**: Writing tests helped identify areas that weren't initially covered, leading to more robust code.
+
+Overall, the process of writing unit tests significantly improved the quality and reliability of the code, demonstrating why testing is an essential part of clean code development.
