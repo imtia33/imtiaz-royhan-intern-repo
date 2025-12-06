@@ -23,3 +23,5 @@ I work as a **mobile app development intern** at Focus Bear. My role involves bu
 * **Testers/QA:** Respond to reported issues and ensure bug fixes meet acceptance criteria.
 * **Supervisors:** Provide progress updates, clarify requirements, and align tasks with sprint goals.
 
+## Note:
+As I have not worked with any of the team members on focus baear as I am completing my onboaridng so I dont think adding how did we colaborated is necessary.
